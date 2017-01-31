@@ -18,7 +18,7 @@ import math
 visited_nodes=[]
 
 
-driver=webdriver.Chrome("/Users/ephsr/Downloads/chromedriver")
+driver=webdriver.Chrome("C:/Users/DELL/Desktop/AirShipShcedule - Copy/Flask/chromedriver.exe")
 driver.get("https://services2.hdb.gov.sg/web/fi10/emap.html#")
 
 # wait for 10seconds, for webpage to load for the first time
@@ -95,6 +95,9 @@ def get_coordinates_from_node(node):
     return coord
           
 def get_node_from_coordinate(coordinate):
+    nodes=driver.find_element_by_xpath('//*[@id="Flats_layer"]').find_elements_by_tag_name("image") 
+    node=nodes.find_element_by_xpath('//image[@x=coordinate[0]][@y=@x=coordinate[1]]')
+    coord=[int(node.get_attribute('x')),int(node.get_attribute('y'))]
     
               
           
@@ -112,8 +115,8 @@ def get_coordinates_of_all_nodes():
     return all_nodes
 
     
-def find_non_visited_node():
-    all_nodes=get_coordinates_of_all_nodes()
+def find_non_visited_node(all_nodes):
+    #all_nodes=get_coordinates_of_all_nodes()
     # get list of non visited nodes
     non_visited_nodes=list(set(all_nodes)-set(visited_nodes))
     # now find a non visited node which is nearest to just visited node--> to be tested later(dfs)
@@ -126,12 +129,13 @@ def find_non_visited_node():
 flag=True
 #def visit_unvisited_node():
 while(flag)
-    get_coordinated_of_all_nodes()
-    non_visited_node=find_non_visited_node()
+    all_nodes=get_coordinated_of_all_nodes()
+    non_visited_node=find_non_visited_node(all_nodes)
     # check for emptyness of non_visited_nodes before returning
     if not non_visited_node: 
         flag=False
     else:
+        mark_node_as_visited(non_visited_node)
         
     
 
@@ -151,4 +155,3 @@ for i in children_nodes:
     # once the build info is clicked the map is refreshed, collect new coordinates
     parent_node=driver.find_element_by_xpath('//*[@id="Flats_layer"]')
     children_nodes = parent_node.find_elements_by_tag_name("image")
-    
